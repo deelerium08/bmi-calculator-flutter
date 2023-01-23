@@ -1,9 +1,15 @@
+import 'package:bmi_calculator/reusable_card.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'icon_content.dart';
+
 const bottomContainerHeight = 80.0;
-const cardColour = Color(0xFF1D1E33);
+const activeCardColour = Color(0xFF1D1E33);
+const inactiveCardColour = Color(0xFF111328);
 const bottomContainerColor = Color(0xFFEB1555);
+
+enum Gender { male, female }
 
 class InputPage extends StatefulWidget {
   @override
@@ -11,6 +17,30 @@ class InputPage extends StatefulWidget {
 }
 
 class _InputPageState extends State<InputPage> {
+  Color maleCardColor = inactiveCardColour;
+  Color femaleCardColor = inactiveCardColour;
+
+// 1 = male ,2 = female
+  void updateColour(Gender selectedGender) {
+    //male card pressed
+    if (selectedGender == Gender.male) {
+      if (maleCardColor == inactiveCardColour) {
+        maleCardColor = activeCardColour;
+        femaleCardColor = inactiveCardColour;
+      } else {
+        maleCardColor = inactiveCardColour;
+      }
+    }
+    if (selectedGender == Gender.female) {
+      if (femaleCardColor == inactiveCardColour) {
+        femaleCardColor = activeCardColour;
+        maleCardColor = inactiveCardColour;
+      } else {
+        femaleCardColor = inactiveCardColour;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,13 +53,35 @@ class _InputPageState extends State<InputPage> {
             child: Row(
               children: <Widget>[
                 Expanded(
-                  child: ReusableCard(
-                    colour: cardColour,
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        updateColour(Gender.male);
+                      });
+                    },
+                    child: ReusableCard(
+                      colour: maleCardColor,
+                      cardChild: IconContent(
+                        label: 'MALE',
+                        icon: FontAwesomeIcons.mars,
+                      ),
+                    ),
                   ),
                 ),
                 Expanded(
-                  child: ReusableCard(
-                    colour: cardColour,
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        updateColour(Gender.female);
+                      });
+                    },
+                    child: ReusableCard(
+                      colour: femaleCardColor,
+                      cardChild: IconContent(
+                        label: 'FEMALE',
+                        icon: FontAwesomeIcons.venus,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -37,7 +89,7 @@ class _InputPageState extends State<InputPage> {
           ),
           Expanded(
             child: ReusableCard(
-              colour: cardColour,
+              colour: activeCardColour,
             ),
           ),
           Expanded(
@@ -45,12 +97,12 @@ class _InputPageState extends State<InputPage> {
               children: <Widget>[
                 Expanded(
                   child: ReusableCard(
-                    colour: cardColour,
+                    colour: activeCardColour,
                   ),
                 ),
                 Expanded(
                   child: ReusableCard(
-                    colour: cardColour,
+                    colour: activeCardColour,
                   ),
                 ),
               ],
@@ -63,21 +115,6 @@ class _InputPageState extends State<InputPage> {
             height: bottomContainerHeight,
           ),
         ],
-      ),
-    );
-  }
-}
-
-class ReusableCard extends StatelessWidget {
-  ReusableCard({@required this.colour});
-  final Color colour;
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(15.0),
-      decoration: BoxDecoration(
-        color: colour,
-        borderRadius: BorderRadius.circular(10.0),
       ),
     );
   }
